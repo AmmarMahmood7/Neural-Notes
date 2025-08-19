@@ -10,9 +10,7 @@ async function Header() {
   const user = await getUser();
 
   return (
-    <header
-      className="relative flex h-24 w-full items-center justify-between bg-popover px-3 sm:px-8"
-    >
+    <header className="relative flex h-24 w-full items-center justify-between bg-popover px-3 sm:px-8">
       <SidebarTrigger className="absolute left-1 top-1" />
 
       <Link className="flex items-center gap-2" href="/">
