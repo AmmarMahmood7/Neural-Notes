@@ -6,6 +6,20 @@ import { handleError } from "@/lib/utils";
 import openai from "@/openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
+const ALLOWED_HTML_TAGS = new Set([
+  "p", "strong", "em", "ul", "ol", "li",
+  "h1", "h2", "h3", "h4", "h5", "h6", "br",
+]);
+
+function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<(\/?)([a-zA-Z][a-zA-Z0-9]*)[^>]*\/?>/g, (_, slash, tag) => {
+      const lower = tag.toLowerCase();
+      if (!ALLOWED_HTML_TAGS.has(lower)) return "";
+      return `<${slash}${lower}>`;
+    });
+}
+
 export const createNoteAction = async (noteId: string) => {
   try {
     const user = await getUser();
@@ -124,5 +138,6 @@ export const askAIAboutNotesAction = async (
     messages,
   });
 
-  return completion.choices[0].message.content || "A problem has occurred";
+  const raw = completion.choices[0].message.content || "<p>A problem has occurred.</p>";
+  return sanitizeHtml(raw);
 };
