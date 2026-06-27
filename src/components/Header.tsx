@@ -10,35 +10,34 @@ async function Header() {
   const user = await getUser();
 
   return (
-    <header className="relative flex h-24 w-full items-center justify-between bg-popover px-3 sm:px-8">
-      <SidebarTrigger className="absolute left-1 top-1" />
+    <header className="sticky top-0 z-50 flex h-14 w-full items-center gap-3 border-b bg-background/80 px-3 backdrop-blur-md sm:px-6">
+      <SidebarTrigger />
 
-      <Link className="flex items-center gap-2" href="/">
+      <Link className="flex items-center gap-2.5" href="/">
         <Image
           src="/Neural_logo.png"
-          height={100}
-          width={100}
-          alt="logo"
+          height={32}
+          width={32}
+          alt="Neural Notes logo"
           className="rounded-full"
           priority
         />
-
-        <h1 className="flex flex-col pb-1 text-2xl font-semibold leading-6">
-          Neural
-        </h1>
+        <span className="hidden font-semibold tracking-tight sm:block">
+          Neural Notes
+        </span>
       </Link>
 
-      <div className="flex gap-4">
+      <div className="ml-auto flex items-center gap-2">
         {user ? (
           <LogOutButton />
         ) : (
           <>
-            <Button asChild>
+            <Button asChild size="sm">
               <Link href="/sign-up" className="hidden sm:block">
                 Sign Up
               </Link>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" size="sm">
               <Link href="/login">Login</Link>
             </Button>
           </>

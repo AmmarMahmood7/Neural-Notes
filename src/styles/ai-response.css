@@ -1,69 +1,66 @@
+.bot-response {
+  line-height: 1.65;
+}
+
 .bot-response h1 {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin: 0.5em 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0.75em 0 0.35em;
 }
 
 .bot-response h2 {
-  font-size: 1.6rem;
-  font-weight: bold;
-  margin: 0.5em 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0.75em 0 0.35em;
 }
 
-.bot-response h3 {
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin: 0.5em 0;
-}
-
-.bot-response h4 {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin: 0.5em 0;
-}
-
-.bot-response h5 {
-  font-size: 1rem;
-  font-weight: bold;
-  margin: 0.5em 0;
-}
-
+.bot-response h3,
+.bot-response h4,
+.bot-response h5,
 .bot-response h6 {
   font-size: 0.9rem;
-  font-weight: bold;
-  margin: 0.5em 0;
+  font-weight: 600;
+  margin: 0.65em 0 0.3em;
 }
 
 .bot-response p {
-  margin: 0.5em 0;
+  margin: 0.4em 0;
+}
+
+.bot-response p:first-child {
+  margin-top: 0;
+}
+
+.bot-response p:last-child {
+  margin-bottom: 0;
 }
 
 .bot-response ul {
   list-style-type: disc;
-  margin: 0.5em 0 0.5em 1.5em;
-  padding-left: 1.5em;
+  margin: 0.4em 0;
+  padding-left: 1.4em;
 }
 
 .bot-response ol {
   list-style-type: decimal;
-  margin: 0.5em 0 0.5em 1.5em;
-  padding-left: 1.5em;
+  margin: 0.4em 0;
+  padding-left: 1.4em;
 }
 
 .bot-response li {
-  margin-bottom: 0.25em;
+  margin-bottom: 0.2em;
+}
+
+.bot-response li:last-child {
+  margin-bottom: 0;
 }
 
 .bot-response b,
 .bot-response strong {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .bot-response i,
 .bot-response em {
   font-style: italic;
-}
-
-.bot-response u {
-  text-decoration: underline;
 }
