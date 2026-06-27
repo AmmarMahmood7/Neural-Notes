@@ -3,7 +3,8 @@ import AskAIButton from "@/components/AskAIButton";
 import NewNoteButton from "@/components/NewNoteButton";
 import NoteTextInput from "@/components/NoteTextInput";
 import HomeToast from "@/components/HomeToast";
-import { prisma } from "@/db/prisma";
+import { sql } from "@/db/postgres";
+import { Note } from "@/db/types";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -17,9 +18,15 @@ async function HomePage({ searchParams }: Props) {
     ? noteIdParam![0]
     : noteIdParam || "";
 
-  const note = await prisma.note.findUnique({
-    where: { id: noteId, authorId: user?.id },
-  });
+  let note: Note | undefined;
+  if (user && noteId) {
+    const rows = await sql<Note[]>`
+      SELECT * FROM "Note"
+      WHERE id = ${noteId} AND "authorId" = ${user.id}
+      LIMIT 1
+    `;
+    note = rows[0];
+  }
 
   return (
     <div className="flex h-full flex-col items-center gap-4">

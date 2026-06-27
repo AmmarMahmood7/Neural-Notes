@@ -1,0 +1,45 @@
+name: CI
+
+# Build the app on every PR and on pushes to master, so a broken build is
+# caught here instead of in the Vercel production deploy.
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    name: Lint & build
+    runs-on: ubuntu-latest
+
+    # Placeholder values so the build can run without real secrets. These are
+    # only needed because some modules (OpenAI/Supabase clients) read env vars
+    # at import time. The build never connects to these services.
+    env:
+      DATABASE_URL: postgresql://user:password@localhost:5432/postgres
+      NEXT_PUBLIC_BASE_URL: http://localhost:3000
+      OPENAI_API_KEY: sk-ci-placeholder
+      SUPABASE_URL: https://placeholder.supabase.co
+      SUPABASE_ANON_KEY: ci-placeholder-anon-key
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (next build)
+        run: pnpm run build

@@ -1,23 +1,19 @@
-import { prisma } from "@/db/prisma";
+import { sql } from "@/db/postgres";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId") || "";
 
-  const newestNoteId = await prisma.note.findFirst({
-    where: {
-      authorId: userId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const rows = await sql<{ id: string }[]>`
+    SELECT id
+    FROM "Note"
+    WHERE "authorId" = ${userId}
+    ORDER BY "createdAt" DESC
+    LIMIT 1
+  `;
 
   return NextResponse.json({
-    newestNoteId: newestNoteId?.id,
+    newestNoteId: rows[0]?.id,
   });
 }

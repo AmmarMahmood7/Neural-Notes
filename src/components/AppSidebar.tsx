@@ -5,8 +5,8 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import { prisma } from "@/db/prisma";
-import { Note } from "@prisma/client";
+import { sql } from "@/db/postgres";
+import { Note } from "@/db/types";
 import Link from "next/link";
 import SidebarGroupContent from "./SidebarGroupContent";
 
@@ -16,14 +16,11 @@ async function AppSidebar() {
   let notes: Note[] = [];
 
   if (user) {
-    notes = await prisma.note.findMany({
-      where: {
-        authorId: user.id,
-      },
-      orderBy: {
-        updatedAt: "desc",
-      },
-    });
+    notes = await sql<Note[]>`
+      SELECT * FROM "Note"
+      WHERE "authorId" = ${user.id}
+      ORDER BY "updatedAt" DESC
+    `;
   }
 
   return (
