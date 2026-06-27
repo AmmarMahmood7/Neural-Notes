@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "pnpm dlx prisma generate && next build",
+    "build": "prisma generate --schema=src/db/schema.prisma && next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "pnpm dlx prisma generate && env $(cat .env.local | xargs) pnpm dlx prisma migrate dev"
+    "migrate": "prisma generate --schema=src/db/schema.prisma && env $(cat .env.local | xargs) prisma migrate dev --schema=src/db/schema.prisma"
   },
   "prisma": {
     "schema": "src/db/schema.prisma"
@@ -47,6 +47,7 @@
     "postcss": "^8",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "prisma": "^6.19.3",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
