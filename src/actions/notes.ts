@@ -1,7 +1,7 @@
 "use server";
 
 import { getUser } from "@/auth/server";
-import { prisma } from "@/db/prisma";
+import { sql } from "@/db/postgres";
 import { handleError } from "@/lib/utils";
 import openai from "@/openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -25,13 +25,10 @@ export const createNoteAction = async (noteId: string) => {
     const user = await getUser();
     if (!user) throw new Error("You must be logged in to create a note");
 
-    await prisma.note.create({
-      data: {
-        id: noteId,
-        authorId: user.id,
-        text: "",
-      },
-    });
+    await sql`
+      INSERT INTO "Note" (id, "authorId", text, "createdAt", "updatedAt")
+      VALUES (${noteId}, ${user.id}, '', now(), now())
+    `;
 
     return { errorMessage: null };
   } catch (error) {
@@ -44,10 +41,11 @@ export const updateNoteAction = async (noteId: string, text: string) => {
     const user = await getUser();
     if (!user) throw new Error("You must be logged in to update a note");
 
-    await prisma.note.update({
-      where: { id: noteId },
-      data: { text },
-    });
+    await sql`
+      UPDATE "Note"
+      SET text = ${text}, "updatedAt" = now()
+      WHERE id = ${noteId} AND "authorId" = ${user.id}
+    `;
 
     return { errorMessage: null };
   } catch (error) {
@@ -60,9 +58,10 @@ export const deleteNoteAction = async (noteId: string) => {
     const user = await getUser();
     if (!user) throw new Error("You must be logged in to delete a note");
 
-    await prisma.note.delete({
-      where: { id: noteId, authorId: user.id },
-    });
+    await sql`
+      DELETE FROM "Note"
+      WHERE id = ${noteId} AND "authorId" = ${user.id}
+    `;
 
     return { errorMessage: null };
   } catch (error) {
@@ -80,12 +79,15 @@ export const askAIAboutNotesAction = async (
   const MAX_NOTES = 50;
   const MAX_NOTE_CHARS = 2000;
 
-  const notes = await prisma.note.findMany({
-    where: { authorId: user.id },
-    orderBy: { updatedAt: "desc" },
-    take: MAX_NOTES,
-    select: { text: true, createdAt: true, updatedAt: true },
-  });
+  const notes = await sql<
+    { text: string; createdAt: Date; updatedAt: Date }[]
+  >`
+    SELECT text, "createdAt", "updatedAt"
+    FROM "Note"
+    WHERE "authorId" = ${user.id}
+    ORDER BY "updatedAt" DESC
+    LIMIT ${MAX_NOTES}
+  `;
 
   if (notes.length === 0) {
     return "You don't have any notes yet.";

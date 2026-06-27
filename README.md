@@ -61,10 +61,9 @@ Neural Notes is a modern note-taking application that combines the power of AI w
 
 4. **Initialize the database**
 
-   ```bash
-   pnpm dlx prisma generate
-   pnpm migrate
-   ```
+   Run the SQL in [`src/db/schema.sql`](src/db/schema.sql) against your
+   Postgres database (for example, paste it into the Supabase SQL editor).
+   This creates the `User` and `Note` tables.
 
 5. **Start the development server**
 
