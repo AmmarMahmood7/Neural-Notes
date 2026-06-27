@@ -12,6 +12,13 @@
   "prisma": {
     "schema": "src/db/schema.prisma"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma"
+    ]
+  },
   "dependencies": {
     "@prisma/client": "^6.3.0",
     "@radix-ui/react-alert-dialog": "^1.1.5",
