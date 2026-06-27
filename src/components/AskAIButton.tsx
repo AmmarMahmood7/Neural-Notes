@@ -16,6 +16,7 @@ import { Textarea } from "./ui/textarea";
 import { ArrowUpIcon } from "lucide-react";
 import { askAIAboutNotesAction } from "@/actions/notes";
 import "@/styles/ai-response.css";
+import DOMPurify from "dompurify";
 
 type Props = {
   user: User | null;
@@ -69,7 +70,11 @@ function AskAIButton({ user }: Props) {
 
     startTransition(async () => {
       const response = await askAIAboutNotesAction(newQuestions, responses);
-      setResponses((prev) => [...prev, response]);
+      const sanitized = DOMPurify.sanitize(response, {
+        ALLOWED_TAGS: ["p", "strong", "em", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6", "br"],
+        ALLOWED_ATTR: [],
+      });
+      setResponses((prev) => [...prev, sanitized]);
 
       setTimeout(scrollToBottom, 100);
     });
@@ -101,7 +106,7 @@ function AskAIButton({ user }: Props) {
         <DialogHeader>
           <DialogTitle>Ask AI About Your Notes</DialogTitle>
           <DialogDescription>
-            Out AI can answer questions about all of your notes
+            Our AI can answer questions about all of your notes
           </DialogDescription>
         </DialogHeader>
 
@@ -140,7 +145,11 @@ function AskAIButton({ user }: Props) {
             value={questionText}
             onChange={(e) => setQuestionText(e.target.value)}
           />
-          <Button className="ml-auto size-8 rounded-full">
+          <Button
+            className="ml-auto size-8 rounded-full"
+            onClick={handleSubmit}
+            disabled={isPending || !questionText.trim()}
+          >
             <ArrowUpIcon className="text-background" />
           </Button>
         </div>

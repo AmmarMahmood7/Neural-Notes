@@ -63,9 +63,13 @@ export const askAIAboutNotesAction = async (
   const user = await getUser();
   if (!user) throw new Error("You must be logged in to ask AI questions");
 
+  const MAX_NOTES = 50;
+  const MAX_NOTE_CHARS = 2000;
+
   const notes = await prisma.note.findMany({
     where: { authorId: user.id },
-    orderBy: { createdAt: "desc" },
+    orderBy: { updatedAt: "desc" },
+    take: MAX_NOTES,
     select: { text: true, createdAt: true, updatedAt: true },
   });
 
@@ -74,14 +78,18 @@ export const askAIAboutNotesAction = async (
   }
 
   const formattedNotes = notes
-    .map((note) =>
-      `
-      Text: ${note.text}
+    .map((note) => {
+      const truncatedText =
+        note.text.length > MAX_NOTE_CHARS
+          ? note.text.slice(0, MAX_NOTE_CHARS) + "… [truncated]"
+          : note.text;
+      return `
+      Text: ${truncatedText}
       Created at: ${note.createdAt}
       Last updated: ${note.updatedAt}
-      `.trim(),
-    )
-    .join("\n");
+      `.trim();
+    })
+    .join("\n\n");
 
   const messages: ChatCompletionMessageParam[] = [
     {

@@ -32,22 +32,26 @@ function SelectNoteButton({ note }: Props) {
     }
   }, [selectedNoteText, shouldUseGlobalNoteText]);
 
-  const blankNoteText = "EMPTY NOTE";
-  let noteText = localNoteText || blankNoteText;
-  if (shouldUseGlobalNoteText) {
-    noteText = selectedNoteText || blankNoteText;
-  }
+  const rawText = shouldUseGlobalNoteText ? selectedNoteText : localNoteText;
+  const lines = rawText.trim().split("\n").filter((l) => l.trim().length > 0);
+  const title = lines[0] || "Empty note";
+  const preview = lines.slice(1).join(" ").trim();
 
   return (
     <SidebarMenuButton
       asChild
       className={`items-start gap-0 pr-12 ${note.id === noteId && "bg-sidebar-accent/50"}`}
     >
-      <Link href={`/?noteId=${note.id}`} className="flex h-fit flex-col">
-        <p className="w-full overflow-hidden truncate text-ellipsis whitespace-nowrap">
-          {noteText}
+      <Link href={`/?noteId=${note.id}`} className="flex h-fit flex-col py-1">
+        <p className="w-full overflow-hidden truncate text-ellipsis whitespace-nowrap font-medium">
+          {title}
         </p>
-        <p className="text-muted-foreground text-xs">
+        {preview && (
+          <p className="text-muted-foreground w-full overflow-hidden truncate text-ellipsis whitespace-nowrap text-xs">
+            {preview}
+          </p>
+        )}
+        <p className="text-muted-foreground mt-0.5 text-xs">
           {note.updatedAt.toLocaleDateString()}
         </p>
       </Link>
