@@ -39,7 +39,7 @@ function NoteTextInput({ noteId, startingNoteText }: Props) {
       value={noteText}
       onChange={handleUpdateNote}
       placeholder="Start writing..."
-      className="custom-scrollbar mb-4 h-full max-w-4xl resize-none border p-6 text-base leading-relaxed placeholder:text-muted-foreground/50 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0"
+      className="custom-scrollbar mb-4 h-full max-w-3xl resize-none rounded-lg border bg-card p-8 font-serif text-[1.0625rem] leading-[1.8] shadow-sm placeholder:text-muted-foreground/40 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0"
     />
   );
 }

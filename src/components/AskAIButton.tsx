@@ -16,7 +16,6 @@ import { Textarea } from "./ui/textarea";
 import { ArrowUpIcon } from "lucide-react";
 import { askAIAboutNotesAction } from "@/actions/notes";
 import "@/styles/ai-response.css";
-import DOMPurify from "dompurify";
 
 type Props = {
   user: User | null;
@@ -70,11 +69,7 @@ function AskAIButton({ user }: Props) {
 
     startTransition(async () => {
       const response = await askAIAboutNotesAction(newQuestions, responses);
-      const sanitized = DOMPurify.sanitize(response, {
-        ALLOWED_TAGS: ["p", "strong", "em", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6", "br"],
-        ALLOWED_ATTR: [],
-      });
-      setResponses((prev) => [...prev, sanitized]);
+      setResponses((prev) => [...prev, response]);
 
       setTimeout(scrollToBottom, 100);
     });

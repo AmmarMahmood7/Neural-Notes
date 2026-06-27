@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Lora } from "next/font/google";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
@@ -11,6 +11,12 @@ import NoteProvider from "@/providers/NoteProvider";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-lora",
   display: "swap",
 });
 
@@ -26,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${lora.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
